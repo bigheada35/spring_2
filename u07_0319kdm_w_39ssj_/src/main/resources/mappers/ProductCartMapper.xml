@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.kosmo.kbat.mapper.ProductCartMapper">
+	
+	<resultMap id="ProductMap" type="edu.kosmo.kbat.vo.ProductCartVO">
+		<result property="member_number" column="member_number"/>
+		<result property="member_id" column="member_id"/>
+		<result property="member_name" column="member_name"/>
+		<result property="member_phone" column="member_phone"/>
+		<result property="member_email" column="member_email"/>
+		<result property="member_address" column="member_address"/>
+		<result property="product_id" column="product_id"/>
+		<result property="product_name" column="product_name"/>
+		<result property="product_price" column="product_price"/>
+		<result property="product_enable" column="product_enable"/>
+		<result property="product_date" column="product_date"/>
+		<result property="product_stock" column="product_stock"/>
+		<result property="product_description" column="product_description"/>
+		<result property="video_id" column="video_id"/>
+		<result property="video_name" column="video_name"/>
+		<result property="image_id" column="image_id"/>
+		<result property="image_name" column="image_name"/>
+	</resultMap>
+	
+	<select id="getList" resultMap = "ProductMap">
+		<![CDATA[ 
+				select 
+                    member.member_number as member_number,
+					member.member_id as member_id,
+					member.member_name as member_name,
+					member.member_phone as member_phone,
+                    member.member_email as member_email,
+                    member.member_address as member_address,
+					product.product_id as product_id,
+					product.product_name as product_name,
+					product.product_price as product_price,
+					product.product_enable as product_enable,
+					product.product_date as product_date,
+					product.product_stock as product_stock,
+					product.product_description as product_description,
+					video.video_id as video_id,
+					video.video_name as video_name,
+					image.image_id as image_id,
+					image.image_name as image_name
+				from 
+                    cart,
+					member,
+					product,
+					video,
+					image 
+				where 
+					cart.product_id = video.product_id 
+					and 
+					cart.product_id = image.product_id
+					and
+                    cart.product_id = product.product_id
+                    and
+                    #{member_number} = member.member_number
+                    and
+                    #{member_number} = cart.member_number
+					order by 
+					product.product_date desc
+		]]>
+	
+	</select>
+	
+<select id="get" resultMap = "ProductMap">
+		<![CDATA[ 
+				select 
+                    member.member_number as member_number,
+					member.member_id as member_id,
+					member.member_name as member_name,
+					member.member_phone as member_phone,
+                    member.member_email as member_email,
+                    member.member_address as member_address,
+					product.product_id as product_id,
+					product.product_name as product_name,
+					product.product_price as product_price,
+					product.product_enable as product_enable,
+					product.product_date as product_date,
+					product.product_stock as product_stock,
+					product.product_description as product_description,
+					video.video_id as video_id,
+					video.video_name as video_name,
+					image.image_id as image_id,
+					image.image_name as image_name
+				from 
+					member,
+					product,
+					video,
+					image 
+				where 
+					#{product_id} = video.product_id 
+					and 
+					#{product_id} = image.product_id
+					and
+                    #{product_id} = product.product_id
+                    and
+                    #{member_number} = member.member_number                     
+					order by 
+					product.product_date desc
+		]]>
+	</select>	
+
+ 	<insert id="write" >
+   		<![CDATA[
+ 			insert into cart(
+ 					cart_id,
+ 					cart_count,
+ 					member_number,
+ 					product_id) 
+ 			values(cart_seq.nextval, 
+ 					1, 
+ 					#{member_number}, 
+ 					#{product_id})
+  		]]>
+    </insert> 
+ 
+	 
+</mapper>
