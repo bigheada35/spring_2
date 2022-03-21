@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.kosmo.kbat.mapper.QBoardAndMemberMapper">
+	
+	<resultMap id="qBoardMap" type="edu.kosmo.kbat.vo.QBoardAndMemberVO">
+		<result property="board_id" column="board_id"/>
+		<result property="board_title" column="board_title"/>
+		<result property="board_content" column="board_content"/>
+		<result property="board_date" column="board_date" />
+		<result property="board_hit" column="board_hit" />
+		<result property="reply_id" column="reply_id" />
+		<result property="reply_group" column="reply_group"/>
+		<result property="reply_step" column="reply_step"/>
+		<result property="reply_indent" column="reply_indent"/>
+		<result property="boardtype_id" column="boardtype_id" />
+		<result property="member_number" column="member_number" />
+		<result property="member_id" column="member_id" />
+		<result property="member_name" column="member_name" />
+		<result property="board_enable" column="board_enable" />
+		<collection property="boardtypeList" resultMap="boardtypeMap"></collection>
+	</resultMap>
+
+	<resultMap id="memberMap" type="edu.kosmo.kbat.vo.MemberVO">
+		<result property="member_number" column="member_number" />
+		<result property="member_id" column="member_id" />
+		<result property="password" column="password" />
+		<result property="member_phone" column="member_phone" />
+	</resultMap>
+
+	<resultMap id="boardtypeMap" type="edu.kosmo.kbat.vo.BoardtypeVO">
+		<result property="boardtype_id" column="boardtype_id" />
+		<result property="boardtype_name" column="boardtype_name" />
+	</resultMap>
+
+   	 <!-- <select id="qgetList" resultMap = "qBoardMap">  				
+   		<![CDATA[ 
+   			select * from boardtype,board,member where board.boardtype_id = boardtype.boardtype_id and board.boardtype_id = 1 and member.member_number =board.member_number order by board_id
+   		]]>  		
+   	</select>  --> 
+   	
+	<!-- <select id="qgetboardtypeList" resultMap = "qBoardMap">
+ 		<![CDATA[ 
+			select * from boardtype, board, reply where board.boardtype_id = boardtype.boardtype_id 
+			and board.boardtype_id = 1 
+			and board.board_id = reply.board_id
+			order by reply_group asc, reply_step asc
+   		]]>   		
+   	</select> -->
+   	
+   	 <select id="qread" resultMap = "qBoardMap">
+   		<![CDATA[
+      		select  *
+      		from board,member,reply 
+      		where member.member_number =board.member_number 
+      		and board.board_id = reply.board_id
+      		and board.board_id = #{board_id}
+      		
+   		]]>
+   	</select>
+   	
+   	<!-- <select id="read" resultType="edu.kosmo.kbat.vo.NBoardVO">
+   	select * from boardtype,board,member where board.boardtype_id = boardtype.boardtype_id and board.boardtype_id = 1 and member.member_number =board.member_number
+   		<![CDATA[
+      		select * from board where board_id = #{board_id}
+   		]]>
+   	</select> -->
+   	
+   	<insert id="qwrite" >
+   		<![CDATA[
+     		insert into board (board_id, member_number, board_title, board_content, boardtype_id, board_enable) 
+      		values (board_seq.nextval, #{member_number}, #{board_title}, #{board_content}, 1, #{board_enable}) 
+  		]]>
+    </insert> 
+    
+    <insert id="qrepwrite" >
+   		<![CDATA[
+     		insert into reply(board_id, reply_id, reply_group, reply_step, reply_indent) 
+     		values(board_seq.currval, board_seq.currval, reply_seq.nextval, '0', '0')
+  		]]>
+    </insert>  
+   	
+    <!-- <insert id="write" >
+   		<![CDATA[
+     		insert into board (board_id, board_title, board_content) 
+      		values (board_seq.nextval, #{board_title}, #{board_content}) 
+  		]]>
+    </insert>  --> 
+    
+    <update id="qmodify">
+   		<![CDATA[
+      		update board set board_title = #{board_title}, board_content = #{board_content} where board_id = #{board_id}      
+   		]]>
+    </update> 
+    
+    <update id="qhit">
+   		<![CDATA[
+     		update board set board_hit = board_hit+1 where board_id = #{board_id}
+   		]]>
+    </update>  
+    
+    <delete id="qdelete">
+   		<![CDATA[
+      		delete from reply where board_id = #{board_id}
+   		]]>
+    </delete>
+    
+    <select id="qgetTotalCount" resultType = "int">
+		<![CDATA[
+			select count(*) from board, reply where boardtype_id = '1' and reply.board_id = board.board_id
+		]]>
+	</select>
+	
+	 <update id="qupdateShape">
+   		<![CDATA[
+      		update reply set reply_indent = reply_indent+1 where reply_group = #{reply_group} and reply_step < #{reply_step}
+   		]]>   		
+   	 </update>  
+
+   <insert id="qregisterBoard">
+   		<![CDATA[
+   		    insert into board (board_id, member_number, board_title, board_content, boardtype_id) 
+      		values (board_seq.nextval, #{member_number}, #{board_title}, #{board_content}, 1)      	
+   		]]>
+   </insert> 
+
+   <insert id="qregisterReply">
+   		<![CDATA[   		
+   	  		insert into reply(board_id, reply_id, reply_group, reply_step, reply_indent)
+			values (board_seq.currval, reply_seq.nextval, #{reply_group}, #{reply_step}+1, #{reply_indent}+1)
+   	  	]]>
+   </insert> 
+	
+	<!-- 	열개씩 뽑아내는거 한페이지에 출력해주는 역할 -->
+	<!-- <select id="getListWithPaging" resultType = "edu.kbat.ex.vo.NBoardVO"> -->
+ 	<select id="qgetListWithPaging" resultMap = "qBoardMap">
+	<![CDATA[
+		         SELECT * FROM (
+              SELECT ROWNUM AS RNUM, A.* FROM (
+												select
+													boardtype.boardtype_name,
+													member.member_number,
+													member.member_id,
+													member.password,
+													member.member_name,
+													board.board_id,
+													board.board_title,
+													board.board_content,
+													board.board_date,
+													board.board_hit,
+													board.board_enable,
+													reply.reply_id,
+													reply.reply_group,													
+													reply.reply_step,
+													reply.reply_indent													
+												from boardtype, board, member, reply
+												where 
+													board.boardtype_id = boardtype.boardtype_id 
+													and board.boardtype_id = 1 
+													and board.board_id = reply.board_id
+													and member.member_number =board.member_number
+												order by reply_group asc, reply_step asc, reply_indent asc								
+             ) A WHERE ROWNUM <= #{pageNum} * #{amount}
+         ) WHERE RNUM > (#{pageNum}-1) * #{amount}		
+	]]>
+	</select>	
+</mapper>

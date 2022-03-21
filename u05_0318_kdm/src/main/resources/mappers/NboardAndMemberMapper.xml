@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.kosmo.kbat.mapper.NBoardAndMemberMapper">
+
+	<resultMap id="nBoardMap"
+		type="edu.kosmo.kbat.vo.NBoardAndMemberVO">
+		<result property="board_id" column="board_id" />
+		<result property="board_title" column="board_title" />
+		<result property="board_content" column="board_content" />
+		<result property="board_date" column="board_date" />
+		<result property="board_hit" column="board_hit" />
+		<result property="boardtype_id" column="boardtype_id" />
+		<result property="member_number" column="member_number" />
+		<result property="member_id" column="member_id" />
+		<result property="member_name" column="member_name" />
+		<collection property="boardtypeList"
+			resultMap="boardtypeMap"></collection>
+	</resultMap>
+
+	<resultMap id="memberMap" type="edu.kosmo.kbat.vo.MemberVO">
+		<result property="member_number" column="member_number" />
+		<result property="member_id" column="member_id" />
+		<result property="password" column="password" />
+		<result property="member_phone" column="member_phone" />
+	</resultMap>
+
+	<resultMap id="boardtypeMap"
+		type="edu.kosmo.kbat.vo.BoardtypeVO">
+		<result property="boardtype_id" column="boardtype_id" />
+		<result property="boardtype_name" column="boardtype_name" />
+	</resultMap>
+
+	<select id="getList" resultMap="nBoardMap">   				
+   		<![CDATA[ 
+   			select * from boardtype,board,member where board.boardtype_id = boardtype.boardtype_id and board.boardtype_id = 0 and member.member_number =board.member_number order by board_id
+   		]]>
+	</select>
+
+	<select id="getboardtypeList" resultMap="nBoardMap">   				
+   		<![CDATA[ 
+   			select * from boardtype,board,member where board.boardtype_id = boardtype.boardtype_id and board.boardtype_id = 0 and member.member_number =board.member_number order by board_id   		
+   		]]>
+	</select>
+
+	<select id="read" resultMap="nBoardMap">
+   		<![CDATA[
+      		select * from board,member where member.member_number =board.member_number and board_id = #{board_id}
+   		]]>
+	</select>
+
+	<!-- <select id="read" resultMap = "nBoardMap"> <![CDATA[ select * from 
+		boardtype,board,member where board.boardtype_id = boardtype.boardtype_id 
+		and board.boardtype_id = 0 and member.member_number =board.member_number 
+		]]> </select> -->
+
+	<!-- <select id="read" resultType="edu.kosmo.kbat.vo.NBoardVO"> <![CDATA[ 
+		select * from board where board_id = #{board_id} ]]> </select> -->
+
+	<insert id="write">
+   		<![CDATA[
+     		insert into board (board_id, member_number, board_title, board_content, boardtype_id) 
+      		values (board_seq.nextval, #{member_number}, #{board_title}, #{board_content}, 0) 
+  		]]>
+	</insert>
+
+	<!-- <insert id="write" > <![CDATA[ insert into board (board_id, board_title, 
+		board_content) values (board_seq.nextval, #{board_title}, #{board_content}) 
+		]]> </insert> -->
+
+	<update id="modify">
+   		<![CDATA[
+      		update board set board_title = #{board_title}, board_content = #{board_content} where board_id = #{board_id}      
+   		]]>
+	</update>
+
+	<update id="hit">
+   		<![CDATA[
+     		update board set board_hit = board_hit+1 where board_id = #{board_id}
+   		]]>
+	</update>
+
+	<delete id="delete">
+   		<![CDATA[
+      		delete from board where board_id = #{board_id}
+   		]]>
+	</delete>
+
+	<select id="getTotalCount" resultType="int">
+		<![CDATA[
+			select count(*) from board where boardtype_id = '0'
+		]]>
+	</select>
+
+	<!-- 열개씩 뽑아내는거 한페이지에 출력해주는 역할 -->
+	<!-- <select id="getListWithPaging" resultType = "edu.kbat.ex.vo.NBoardVO"> -->
+	<select id="getListWithPaging" resultMap="nBoardMap">
+	<![CDATA[
+		         SELECT * FROM (
+              SELECT ROWNUM AS RNUM, A.* FROM (
+												select
+													boardtype.boardtype_id,
+													boardtype.boardtype_name,
+													member.member_number,
+													member.member_id,
+													member.password,
+													member.member_name,
+													member.member_phone,
+													member.member_email,
+													member.member_address,
+													member.member_company,
+													board.board_id,
+													board.board_title,
+													board.board_content,
+													board.board_date,
+													board.board_hit
+												from boardtype, board, member 
+												where 
+													board.boardtype_id = boardtype.boardtype_id 
+													and board.boardtype_id = 0 
+													and member.member_number =board.member_number 
+												order by board_id
+												
+             ) A WHERE ROWNUM <= #{pageNum} * #{amount}
+         ) WHERE RNUM > (#{pageNum}-1) * #{amount}		
+	]]>
+	</select>
+
+</mapper>

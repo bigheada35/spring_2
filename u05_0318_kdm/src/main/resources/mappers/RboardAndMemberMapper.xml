@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.kosmo.kbat.mapper.RBoardAndMemberMapper">
+
+	<resultMap id="rBoardMap"
+		type="edu.kosmo.kbat.vo.RBoardAndMemberVO">
+		<result property="board_id" column="board_id" />
+		<result property="board_title" column="board_title" />
+		<result property="board_content" column="board_content" />
+		<result property="board_date" column="board_date" />
+		<result property="board_hit" column="board_hit" />
+		<result property="boardtype_id" column="boardtype_id" />
+		<result property="member_number" column="member_number" />
+		<result property="member_id" column="member_id" />
+		<result property="member_name" column="member_name" />
+		<result property="rating_id" column="rating_id" />
+		<result property="rating_check" column="rating_check" />
+		<result property="order_detail_id" column="order_detail_id" />
+		<result property="review_id" column="review_id" />
+		<result property="attachment_id" column="attachment_id" />
+		<result property="attachment_name" column="attachment_name" />
+		<collection property="boardtypeList"
+			resultMap="boardtypeMap"></collection>
+	</resultMap>
+
+	<resultMap id="memberMap" type="edu.kosmo.kbat.vo.MemberVO">
+		<result property="member_number" column="member_number" />
+		<result property="member_id" column="member_id" />
+		<result property="password" column="password" />
+		<result property="member_phone" column="member_phone" />
+	</resultMap>
+
+	<resultMap id="boardtypeMap"
+		type="edu.kosmo.kbat.vo.BoardtypeVO">
+		<result property="boardtype_id" column="boardtype_id" />
+		<result property="boardtype_name" column="boardtype_name" />
+	</resultMap>
+
+	<select id="rgetList" resultMap="rBoardMap">  				
+   		<![CDATA[ 
+   			select * from boardtype,board,member where board.boardtype_id = boardtype.boardtype_id and board.boardtype_id = 2 and member.member_number =board.member_number order by board_id
+   		]]>
+	</select>
+
+	<select id="rgetboardtypeList" resultMap="rBoardMap">
+ 		<![CDATA[ 
+			select * from boardtype,board where board.boardtype_id = boardtype.boardtype_id and board.boardtype_id = 2 order by board_id
+   		]]>
+	</select>
+
+	<select id="rread" resultMap="rBoardMap">
+   		<![CDATA[
+      		select * from board,member where member.member_number =board.member_number and board_id = #{board_id}
+      		
+   		]]>
+	</select>
+
+	<!-- <select id="read" resultType="edu.kosmo.kbat.vo.NBoardVO"> select * 
+		from boardtype,board,member where board.boardtype_id = boardtype.boardtype_id 
+		and board.boardtype_id = 1 and member.member_number =board.member_number 
+		<![CDATA[ select * from board where board_id = #{board_id} ]]> </select> -->
+
+	<insert id="rwrite">
+   		<![CDATA[
+     		insert into board (board_id, member_number, board_title, board_content, boardtype_id) 
+      		values (board_seq.nextval, #{member_number}, #{board_title}, #{board_content}, '2') 
+  		]]>
+	</insert>
+
+	<insert id="rwrite_review">
+   		<![CDATA[
+     		insert into review(board_id, review_id, order_detail_id)
+			values(board_seq.currval, review_seq.nextval, '1')
+  		]]>
+	</insert>
+
+	<insert id="rwrite_rating">
+   		<![CDATA[
+     		insert into rating(review_id, rating_id, rating_check)
+			values(review_seq.currval, rating_seq.nextval, #{rating_check})
+  		]]>
+	</insert>
+
+	<!-- <insert id="write" > <![CDATA[ insert into board (board_id, board_title, 
+		board_content) values (board_seq.nextval, #{board_title}, #{board_content}) 
+		]]> </insert> -->
+
+	<update id="rmodify">
+   		<![CDATA[
+      		update board set board_title = #{board_title}, board_content = #{board_content} where board_id = #{board_id}      
+   		]]>
+	</update>
+
+	<update id="rhit">
+   		<![CDATA[
+     		update board set board_hit = board_hit+1 where board_id = #{board_id}
+   		]]>
+	</update>
+
+	<delete id="rdelete">
+   		<![CDATA[
+      		delete from board where board_id = #{board_id}
+   		]]>
+	</delete>
+
+	<select id="rgetTotalCount" resultType="int">
+	<![CDATA[
+		select count(*) from board where boardtype_id = '2'
+	]]>
+	</select>
+
+	<!-- 열개씩 뽑아내는거 한페이지에 출력해주는 역할 -->
+	<!-- <select id="getListWithPaging" resultType = "edu.kbat.ex.vo.NBoardVO"> -->
+	<select id="rgetListWithPaging" resultMap="rBoardMap">
+	<![CDATA[
+		          SELECT * FROM (
+              SELECT ROWNUM AS RNUM, A.* FROM (
+												select
+													boardtype.boardtype_id,
+													boardtype.boardtype_name,
+													member.member_number,
+													member.member_id,
+													member.password,
+													member.member_name,
+													member.member_phone,
+													member.member_email,
+													member.member_address,
+													member.member_company,
+													board.board_id,
+													board.board_title,
+													board.board_content,
+													board.board_date,
+													board.board_hit,
+													rating.rating_check											
+												from boardtype, board, member, rating, review
+												where 
+													board.boardtype_id = boardtype.boardtype_id 
+													and board.boardtype_id = 2 
+													and member.member_number =board.member_number 
+													and review.board_id = board.board_id
+													and review.review_id = rating.review_id
+												order by board_id
+												
+             ) A WHERE ROWNUM <= #{pageNum} * #{amount}
+         ) WHERE RNUM > (#{pageNum}-1) * #{amount}				
+	]]>
+	</select>
+
+</mapper>

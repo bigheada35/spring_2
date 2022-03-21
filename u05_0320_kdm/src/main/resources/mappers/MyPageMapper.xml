@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="edu.kosmo.kbat.mapper.MyPageMapper">
+
+	<resultMap id="memberMap" type="edu.kosmo.kbat.vo.MemberVO">
+		<result property="member_number" column="member_number" />
+		<result property="member_id" column="member_id" />
+		<result property="password" column="password" />
+		<result property="member_name" column="member_name" />
+		<result property="member_phone" column="member_phone" />
+		<result property="member_email" column="member_email" />
+		<result property="member_address" column="member_address" />
+		<result property="member_company" column="member_company" />
+		<result property="enabled" column="enabled" />
+		<collection property="authList" resultMap="authMap"></collection>
+	</resultMap>
+
+	<resultMap id="authMap" type="edu.kosmo.kbat.vo.AuthVO">
+		<result property="authority_id" column="authority_id" />
+		<result property="authority_name" column="authority_name" />
+		<result property="member_number" column="member_number" />
+	</resultMap>
+
+
+	<resultMap id="order" type="edu.kosmo.kbat.vo.OrderVO">
+		<result property="orders_id" column="orders_id" />
+		<result property="orders_price" column="orders_price" />
+		<result property="orders_date" column="orders_date" />
+		<result property="member_number" column="member_number" />
+		<result property="member_id" column="member_id" />
+		<collection property="orderDetailVO"
+			resultMap="orderDetail"></collection>
+		<collection property="rboardVO" resultMap="orderReview"></collection>
+	</resultMap>
+
+	<resultMap id="orderDetail"
+		type="edu.kosmo.kbat.vo.OrderDetailVO">
+
+		<result property="order_detail_id" column="order_detail_id" />
+		<result property="order_detail_count"
+			column="order_detail_count" />
+
+		<result property="orders_id" column="orders_id" />
+		<result property="product_id" column="product_id" />
+
+	</resultMap>
+
+
+
+
+
+	<!-- 회원정보 조회 -->
+	<select id="readMember" resultType="edu.kosmo.kbat.vo.MemberVO">
+		<![CDATA[
+		select * from member where member_id = #{member_id}
+	]]>
+	</select>
+
+
+	<!-- 회원정보 수정 -->
+	<update id="updateMember">
+	<![CDATA[
+		update member set 
+		member_name = #{member_name}
+		,member_phone = #{member_phone}
+		,member_email = #{member_email}
+		,member_address = #{member_address}
+		,member_company = #{member_company}
+		where member_id = #{member_id}
+		]]>
+	</update>
+
+	<!-- 탈퇴 -->
+	<update id="deleteMember"> 
+	 
+	 <![CDATA[    update member set enabled = 0
+		where member_id = #{member_id} ]]>
+	</update>
+
+	<!-- <delete id="deleteMember"> <![CDATA[ begin delete from authority where 
+		authority_id in(select authority_id from authority where member_number=#{member_number}); 
+		delete from member where member_id= #{member_id}; end; ]]> </delete> -->
+
+
+
+	<!-- 주문내역 리스트 가져오기 -->
+	<select id="getOrderMyList"
+		resultType="edu.kosmo.kbat.joinvo.ProductOrderDetailOrderVO">
+	<![CDATA[
+	SELECT o.orders_id, p.product_id, m.member_id, p.product_name, o.orders_date, o.orders_price
+		FROM product p, order_detail d, orders o , member m
+		WHERE p.product_id = d.product_id AND 
+		    o.orders_id = d.orders_id AND 
+		    m.member_id = #{member_id}
+		ORDER BY o.orders_date DESC
+	]]>
+	</select>
+	<select id="getOrderMyListPaging"
+		resultType="edu.kosmo.kbat.joinvo.ProductOrderDetailOrderVO">
+	<![CDATA[
+	
+  SELECT * FROM (
+              SELECT ROWNUM AS RNUM, A.* FROM (
+		SELECT o.orders_id, p.product_id, m.member_id, p.product_name, o.orders_date, o.orders_price
+		FROM product p, order_detail d, orders o , member m
+		WHERE p.product_id = d.product_id AND 
+		    o.orders_id = d.orders_id AND 
+		    m.member_id = #{member_id}
+		ORDER BY o.orders_date DESC
+ 			) A WHERE ROWNUM <= #{cri.pageNum} * #{cri.amount} 
+		) WHERE RNUM > (#{cri.pageNum}-1) * #{cri.amount}
+	]]>
+	</select>
+
+
+	<!-- 페이징 단위에 적용되는 최대 주문내역 단위 -->
+	<select id="getOrderMyTotalCount" resultType="int">
+		<![CDATA[
+			SELECT COUNT(*) 
+			FROM order_detail
+		]]>
+	</select>
+
+
+
+
+
+</mapper>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+	
+<!-- 상품 검색기능 --> 
+<mapper namespace="edu.kosmo.kbat.mapper.MainMapper">
+
+
+	<!-- <sql id="searchCriteria">
+		<trim prefix="(" suffix=") AND " prefixOverrides="OR">
+			<foreach item='type' collection="typeArr">
+				<trim prefix="OR">
+					<choose>
+						<when test="type =='T'.toString()">
+							product_id like '%'||#{keyword}||'%'
+						</when>
+						<when test="type =='C'.toString()">
+							product_name like '%'||#{keyword}||'%'
+						</when>
+						<when test="type =='W'.toString()">
+							product_description like '%'||#{keyword}||'%'
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		</trim>	
+	</sql> -->
+	
+	
+	<sql id="criteria">
+		    <if test="keyword != null">
+			    product_name like '%' || #{keyword} || '%' and
+			</if>
+	</sql>
+	
+	<select id="getProductList" resultType="edu.kosmo.kbat.vo.ProductVO">
+		<![CDATA[
+			SELECT  
+				product_id, product_name, product_price, product_description
+		 FROM (
+		 	select rownum rn, product_id, product_name, product_price, product_description
+		 	from product
+		 	where
+		]]>
+		
+	    
+	    <include refid="criteria"></include>
+	    
+	    <![CDATA[
+	    		        
+		        rownum <= #{pageNum} * #{amount} 
+	        	)
+	        where rn > (#{pageNum} -1) * #{amount}
+		]]>	  		
+	
+	</select>
+	
+	<!-- 상품 총 개수 -->
+	<select id="getProductTotal" resultType="int">
+	
+		select count(*) from product
+		where
+		<include refid="criteria"></include> 
+		product_id >0
+		
+	</select>
+</mapper>
+
+	<!-- criteria(검색조건) -->
+	<!-- <sql id="criteria">
+		    <if test="keyword != null">
+			    productName like '%' || #{keyword} || '%' and
+			</if>
+	</sql>
+
+	
+	상품 검색
+	<select id="getProductList" resultType="edu.kosmo.kbat.ProductVO">
+	
+		<![CDATA[
+		    select category_id, product_name from(
+		        select /*+INDEX_DESC(product 인덱스ID)*/ rownum as rn, product_id, product_name,
+		           (select category_name from category c, product p where p.category_id = c.category_id) category_name, category_id
+		        from product
+		        where
+	    ]]>
+	    
+	    <include refid="criteria"></include>
+	    
+	    <![CDATA[
+	    		        
+		        rownum <= #{pageNum} * #{amount} 
+	        	)
+	        where rn > (#{pageNum} -1) * #{amount}
+		]]>	  		
+	
+	</select>
+	
+	상품 총 개수
+	<select id="productGetTotal" resultType="int">
+	
+		select count(*) from product
+		where
+		<include refid="criteria"></include> 
+		product_id >0
+		
+	</select>
+
+
+
+</mapper>
+ -->
