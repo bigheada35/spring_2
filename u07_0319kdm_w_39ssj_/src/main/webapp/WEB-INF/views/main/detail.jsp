@@ -54,8 +54,10 @@
              <li><a href="/main/cartorder" class="text-white">/main/cartorder</a></li>
             <li><a href="/upload/list2" class="text-white">/upload/list2</a></li>
             <li><a href="/login" class="text-white">/login</a></li>
-			<li><a href="#" class="text-white">아이디: <sec:authentication property="principal.user.member_id"/></a></li>
-			<li><a href="#" class="text-white">이름: <sec:authentication property="principal.user.member_name"/></a></li>
+            <sec:authorize access="isAuthenticated()">
+				<li><a href="#" class="text-white">아이디: <sec:authentication property="principal.user.member_id"/></a></li>
+				<li><a href="#" class="text-white">이름: <sec:authentication property="principal.user.member_name"/></a></li>
+			</sec:authorize>	
          </ul>
         </div>
       </div>

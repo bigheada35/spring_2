@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import edu.kosmo.kbat.vo.CartVO;
 import edu.kosmo.kbat.vo.ProductCartVO;
 import edu.kosmo.kbat.vo.ProductVO;
 import edu.kosmo.kbat.vo.UserVO;
@@ -18,9 +19,10 @@ public interface ProductCartMapper {
 	List<ProductCartVO> getList(int member_number);
 	
 	//상품 읽어 오기
-	ProductCartVO get(int product_id);
+	ProductCartVO get(int member_number, int product_id);
 	
-
+	CartVO exist(int member_number, int product_id);
+	
 	// 상품 카트 등록  
 	void write(int member_number, int product_id);
 	

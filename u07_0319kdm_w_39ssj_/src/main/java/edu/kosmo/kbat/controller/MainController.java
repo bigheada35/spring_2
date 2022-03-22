@@ -140,9 +140,17 @@ public class MainController {
         	System.out.println("멤버 아이디1 : " +  member_number);
         	//System.out.println("멤버 아이디2 : " +  userService.getUser(user_id));
         	
-        	//로그인 한사람의 장바구니에  물건을 담는다.
-        	if(product_id !=null)
-        		productCartService.write(member_number, Integer.valueOf(product_id));
+      	//로그인 한사람의 장바구니에  물건을 담는다. 
+        	//  조건: view에서 product_id가 확실하게 넘어왔고,
+        	//       DB에 동일한 상품이 없는 경우만  물건을 담는다.
+        	if(product_id !=null ) {
+        		System.out.println("==============1");
+        		if(productCartService.exist(member_number, Integer.valueOf(product_id)) == null) { 
+        				System.out.println("==============2");
+        				productCartService.write(member_number, Integer.valueOf(product_id));
+        		}
+        	}
+        		
         	
         	// 로그인 한사람의 장바구니안 리스트를 읽어온다.
             List <ProductCartVO> productCartVO = productCartService.getList(member_number);
@@ -180,8 +188,27 @@ public class MainController {
 	public String checkout(HttpServletRequest request,  Model model) {
 		String product_id = (String) request.getParameter("product_id");
 		System.out.println("----checkout----product_id:"+product_id);
-		//ProductVO productVO = productService.get(Integer.valueOf(product_id));
-		//model.addAttribute("prod", productVO);
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String user_id = auth.getName();
+        System.out.println("----------------------유저 아이디 : " + user_id);	
+        if(user_id != "anonymousUser") {
+        	UserVO uservo = userService.getUser(user_id);
+        	int member_number = uservo.getMember_number();
+        	System.out.println("멤버 아이디1 : " +  member_number);
+        	//System.out.println("멤버 아이디2 : " +  userService.getUser(user_id));
+        	
+        	//로그인 한사람의 장바구니에  물건을 담는다.
+        	//  조건: view에서 product_id가 확실하게 넘어왔고,
+        	//       DB에 동일한 상품이 없는 경우만  물건을 담는다.
+        	//if(product_id !=null && productCartService.get(Integer.valueOf(product_id)) == null) 
+        		//productCartService.write(member_number, Integer.valueOf(product_id));
+        	
+        	// 로그인 한사람의 장바구니안 리스트를 읽어온다.
+            List <ProductCartVO> productCartVO = productCartService.getList(member_number);
+    		model.addAttribute("products", productCartVO);
+        }
+
 		
 		return "/pay/checkout";
 	}

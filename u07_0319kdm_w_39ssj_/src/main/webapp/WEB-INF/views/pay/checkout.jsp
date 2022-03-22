@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!doctype html>
 <html lang="en">
   <head>
@@ -39,9 +40,13 @@
         <div class="col-sm-4 offset-md-1 py-4">
           <h4 class="text-white">Contact</h4>
           <ul class="list-unstyled">
-            <li><a href="#" class="text-white">Follow on Twitter</a></li>
-            <li><a href="#" class="text-white">Like on Facebook</a></li>
-            <li><a href="#" class="text-white">Email me</a></li>
+            <li><a href="/main/cartorder" class="text-white">/main/cartorder</a></li>
+            <li><a href="/upload/list2" class="text-white">/upload/list2</a></li>
+            <li><a href="/login" class="text-white">/login</a></li>
+            <sec:authorize access="isAuthenticated()">
+				<li><a href="#" class="text-white">아이디: <sec:authentication property="principal.user.member_id"/></a></li>
+				<li><a href="#" class="text-white">이름: <sec:authentication property="principal.user.member_name"/></a></li>
+			</sec:authorize>	
           </ul>
         </div>
       </div>
@@ -64,6 +69,40 @@
 
 <h1>결제 페이지 입니다.</h1>
   
+
+	<table width="1000" cellpadding="0" cellspacing="0" border="1">
+		<%-- <c:forEach items="${files}" var="file"> --%>
+		<c:forEach items="${products}" var="prod">
+		<tr>
+	 	 			 <td>${prod.member_id}</td>
+	 	 			 <td>${prod.member_name}</td>
+	 	 			 <td>${prod.member_phone}</td>
+	 	 			 <td>${prod.member_email}</td>
+	 	 			 <td>${prod.member_address}</td>
+	 				<td>
+	 					<video width="300" height="250" controls/>
+			          		<%-- <source src="<c:url value="${file}"/>" type="video/mp4"> --%>
+			          		<source src="<c:url value="${prod.video_name}"/>" type="video/mp4">
+					    </video>
+					    ${prod.video_name}
+					<td/>
+					<%-- <td>${file} </td> --%>
+					<%-- <td>${prod.video_name} </td> --%>
+					<td>${prod.product_name} </td>
+					<td>${prod.product_price} </td>
+					<td>${prod.product_enable} </td>
+					<td>${prod.product_date} </td>
+					<td style="min-width:200px;">${prod.product_description} </td>
+					<td>
+						<img src="<c:url value="${prod.image_name}"/>" style="max-width:250px;"/>
+					${prod.image_name} </td>
+					<td>
+						<a href="/main/cartorder_delete?product_id=${prod.product_id}">삭제</a> 
+					</td>
+	
+		 </tr>
+		</c:forEach>	
+	</table>
 
 
 </main>

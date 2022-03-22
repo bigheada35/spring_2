@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import edu.kosmo.kbat.mapper.ProductCartMapper;
 import edu.kosmo.kbat.mapper.ProductMapper;
+import edu.kosmo.kbat.vo.CartVO;
 import edu.kosmo.kbat.vo.ProductCartVO;
 import edu.kosmo.kbat.vo.ProductVO;
 
@@ -26,8 +27,13 @@ public class ProductCartServiceImpl implements ProductCartService{
 	}
 
 	@Override
-	public ProductCartVO get(int product_id) {
-		return productCartMapper.get(product_id);
+	public ProductCartVO get(int member_number, int product_id) {
+		return productCartMapper.get(member_number, product_id);
+	}
+	
+	@Override
+	public CartVO exist(int member_number, int product_id) {
+		return productCartMapper.exist(member_number, product_id);
 	}
 	
 	@Override

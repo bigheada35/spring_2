@@ -104,6 +104,19 @@
 		]]>
 	</select>	
 
+ 	<select id="exist" resultMap = "CartVO">
+   		<![CDATA[
+				select 
+					* 
+				from 
+					cart 
+				where
+					member_number = #{member_number} 
+				and 
+					product_id=#{product_id}
+  		]]>
+    </select> 
+
  	<insert id="write" >
    		<![CDATA[
  			insert into cart(
