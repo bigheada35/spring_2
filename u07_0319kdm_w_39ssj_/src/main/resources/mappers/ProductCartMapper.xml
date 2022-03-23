@@ -104,7 +104,14 @@
 		]]>
 	</select>	
 
- 	<select id="exist" resultMap = "CartVO">
+	<resultMap id="CartMap" type="edu.kosmo.kbat.vo.CartVO">
+		<result property="cart_id" column="cart_id"/>
+		<result property="cart_count" column="cart_count"/>
+		<result property="member_number" column="member_number"/>
+		<result property="product_id" column="product_id"/>
+	</resultMap>
+
+ 	<select id="exist" resultMap ="CartMap">
    		<![CDATA[
 				select 
 					* 

@@ -23,9 +23,11 @@ import edu.kosmo.kbat.page.Criteria;
 import edu.kosmo.kbat.page.PageVO;
 import edu.kosmo.kbat.service.MainService;
 import edu.kosmo.kbat.service.ProductCartService;
+import edu.kosmo.kbat.service.ProductOrderService;
 import edu.kosmo.kbat.service.ProductService;
 import edu.kosmo.kbat.service.UserService;
 import edu.kosmo.kbat.vo.ProductCartVO;
+import edu.kosmo.kbat.vo.ProductOrderVO;
 import edu.kosmo.kbat.vo.ProductVO;
 import edu.kosmo.kbat.vo.UserVO;
 import lombok.AllArgsConstructor;
@@ -44,6 +46,11 @@ public class MainController {
 	
 	@Autowired
 	private	ProductCartService productCartService;
+	
+	@Autowired
+	private	ProductOrderService productOrderService;
+	
+	
 	@Autowired
 	private UserService userService;
 	
@@ -198,18 +205,91 @@ public class MainController {
         	System.out.println("멤버 아이디1 : " +  member_number);
         	//System.out.println("멤버 아이디2 : " +  userService.getUser(user_id));
         	
-        	//로그인 한사람의 장바구니에  물건을 담는다.
+          	//로그인 한사람의 장바구니에  물건을 담는다. 
         	//  조건: view에서 product_id가 확실하게 넘어왔고,
         	//       DB에 동일한 상품이 없는 경우만  물건을 담는다.
-        	//if(product_id !=null && productCartService.get(Integer.valueOf(product_id)) == null) 
-        		//productCartService.write(member_number, Integer.valueOf(product_id));
+        	if(product_id !=null ) {
+        		System.out.println("==============1");
+        		if(productCartService.exist(member_number, Integer.valueOf(product_id)) == null) { 
+        				System.out.println("==============2");
+        				productCartService.write(member_number, Integer.valueOf(product_id));
+        		}
+        	}
         	
-        	// 로그인 한사람의 장바구니안 리스트를 읽어온다.
+        	// 로그인 한사람의 장바구니만 리스트를 읽어온다.
             List <ProductCartVO> productCartVO = productCartService.getList(member_number);
     		model.addAttribute("products", productCartVO);
+    		
+    		// 로그인 한사람의 주문 리스트를 읽어온다.
+    		List <ProductOrderVO> productOrderVO = productOrderService.getOrderList(uservo.getMember_id());
+    		model.addAttribute("products_order", productOrderVO);
         }
 
 		
 		return "/pay/checkout";
 	}
+	@GetMapping("/main/checkout_delete")
+	public String checkout_delete(HttpServletRequest request,  Model model) {
+		String product_id = (String) request.getParameter("product_id");
+		System.out.println("----cartorder_delete----product_id:"+product_id);
+		
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String user_id = auth.getName();
+        System.out.println("----------------------유저 아이디 : " + user_id);	
+        if(user_id != "anonymousUser" && product_id !=null) {
+        	UserVO uservo = userService.getUser(user_id);
+        	int member_number = uservo.getMember_number();
+        	System.out.println("멤버 아이디1 : " +  member_number);
+        	//System.out.println("멤버 아이디2 : " +  userService.getUser(user_id));
+        	
+        	//로그인 한사람의 주문 리스트에서 물건 한개를 삭제한다.
+        	//if(product_id !=null)
+        	//	productCartService.delete(member_number, Integer.valueOf(product_id));
+        	
+        	// 로그인 한사람의 장바구니안 리스트를 읽어온다.
+            List <ProductCartVO> productCartVO = productCartService.getList(member_number);
+    		model.addAttribute("products", productCartVO);
+    		
+    		// 로그인 한사람의 주문 리스트를 읽어온다.
+    		List <ProductOrderVO> productOrderVO = productOrderService.getOrderList(uservo.getMember_id());
+    		model.addAttribute("products_order", productOrderVO);    		
+        }
+ 		return "/pay/checkout";
+	}	
+	@GetMapping("/pay/Cart2OrderImport")
+	public String Cart2OrderImport(HttpServletRequest request,  Model model) {
+		System.out.println("----Cart2OrderImport----");
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String user_id = auth.getName();
+        System.out.println("----------------------유저 아이디 : " + user_id);	
+        if(user_id != "anonymousUser") {
+        	UserVO uservo = userService.getUser(user_id);
+        	int member_number = uservo.getMember_number();
+        	System.out.println("멤버 아이디1 : " +  member_number);
+        	//System.out.println("멤버 아이디2 : " +  userService.getUser(user_id));
+        	
+        	//로그인 한사람의 주문 리스트에서 물건 한개를 삭제한다.
+        	//if(product_id !=null)
+        	//	productCartService.delete(member_number, Integer.valueOf(product_id));
+        	
+        	// 로그인 한사람의 장바구니안 리스트를 읽어온다.
+            List <ProductCartVO> productCartVO = productCartService.getList(member_number);
+            for (ProductCartVO product : productCartVO) {
+				// 장바구니 안의 물건을 주문 리스틀로 복사한다.
+            	System.out.println("============== todo: cart 2 order ============");
+            	// 장바구니 안의 물건은 삭제 한다.
+            	productCartService.delete(member_number, product.getProduct_id());
+			}
+    		//model.addAttribute("products", productCartVO);
+    		
+    		// 로그인 한사람의 주문 리스트를 읽어온다.
+    		List <ProductOrderVO> productOrderVO = productOrderService.getOrderList(uservo.getMember_id());
+    		model.addAttribute("products_order", productOrderVO);    		
+        }
+
+		return "/pay/import";
+	}
+	
 }

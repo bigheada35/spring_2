@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="edu.kosmo.kbat.mapper.ProductOrderMapper">
+
+	<!-- 주문내역 리스트 가져오기 -->
+	<select id="getOrderList"
+		resultType="edu.kosmo.kbat.vo.ProductOrderVO">
+	<![CDATA[
+	SELECT o.orders_id, p.product_id, m.member_id, p.product_name, o.orders_date, o.orders_price
+		FROM product p, order_detail d, orders o , member m
+		WHERE p.product_id = d.product_id AND 
+		    o.orders_id = d.orders_id AND 
+		    m.member_id = #{member_id}
+		ORDER BY o.orders_date DESC
+	]]>
+	</select>
+
+
+</mapper>
