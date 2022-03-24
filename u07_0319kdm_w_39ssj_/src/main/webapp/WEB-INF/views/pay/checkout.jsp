@@ -97,7 +97,7 @@
 						<img src="<c:url value="${prod.image_name}"/>" style="max-width:250px;"/>
 					${prod.image_name} </td>
 					<td>
-						<a href="/main/checkout_delete?product_id=${prod.product_id}">삭제</a> 
+						<a href="/main/checkout_delete?product_id=${prod.product_id}">카트상품삭제</a> 
 					</td>
 	
 		 </tr>
@@ -111,29 +111,29 @@
 		<c:forEach items="${products_order}" var="prod">
 		<tr>
 	 	 			 <td>${prod.member_id}</td>
-	 	 			 <%-- <td>${prod.member_name}</td> --%>
+	 	 			 <%-- <td>${prod.member_name}</td> --%> 
 	 	 			 <%-- <td>${prod.member_phone}</td> --%>
 	 	 			 <%-- <td>${prod.member_email}</td> --%>
 	 	 			 <%-- <td>${prod.member_address}</td> --%>
 	 				<td>
 	 					<video width="300" height="250" controls/>
 			          		<%-- <source src="<c:url value="${file}"/>" type="video/mp4"> --%>
-			          		<%-- <source src="<c:url value="${prod.video_name}"/>" type="video/mp4"> --%>
+			          		<source src="<c:url value="${prod.video_name}"/>" type="video/mp4">
 					    </video>
 					    <%-- ${prod.video_name} --%>
 					<td/>
 					<%-- <td>${file} </td> --%>
-					<%-- <td>${prod.video_name} </td> --%>
+					<td>${prod.video_name} </td> 
 					<td>${prod.product_name} </td>
 					<td>${prod.product_price} </td>
 					<%-- <td>${prod.product_enable} </td> --%>
 					<td>${prod.product_date} </td>
 					<td style="min-width:200px;">${prod.product_description} </td>
-					<%-- <td>
-						<img src="<c:url value="${prod.image_name}"/>" style="max-width:250px;"/>
-					${prod.image_name} </td> --%>
 					<td>
-						<a href="/pay/checkout_delete?product_id=${prod.product_id}">삭제</a> 
+						<img src="<c:url value="${prod.image_name}"/>" style="max-width:250px;"/>
+					${prod.image_name} </td> 
+					<td>
+						<a href="/main/checkout_delete?orders_id=${prod.orders_id}">주문삭제</a> 
 					</td>
 	
 		 </tr>
@@ -143,7 +143,7 @@
 	<div class="container">
 	  <div class="row">
 	    <div class="col text-center">
-	      <button class="btn btn-default"><a href="/pay/Cart2OrderImport">결제하기</a></button>
+	      <button class="btn btn-default"><a href="/pay/checkout_import">결제하기</a></button>
 	    </div>
 	  </div>
 	</div>

@@ -230,26 +230,40 @@ public class MainController {
 	}
 	@GetMapping("/main/checkout_delete")
 	public String checkout_delete(HttpServletRequest request,  Model model) {
+		String orders_id = (String) request.getParameter("orders_id");
+		System.out.println("----cartorder_delete----orders_id:"+orders_id);
 		String product_id = (String) request.getParameter("product_id");
-		System.out.println("----cartorder_delete----product_id:"+product_id);
-		
+		System.out.println("----cartorder_delete----product_id:"+product_id);		
 		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String user_id = auth.getName();
         System.out.println("----------------------유저 아이디 : " + user_id);	
-        if(user_id != "anonymousUser" && product_id !=null) {
+        if(user_id != "anonymousUser" ) {
         	UserVO uservo = userService.getUser(user_id);
         	int member_number = uservo.getMember_number();
         	System.out.println("멤버 아이디1 : " +  member_number);
         	//System.out.println("멤버 아이디2 : " +  userService.getUser(user_id));
+
         	
         	//로그인 한사람의 주문 리스트에서 물건 한개를 삭제한다.
-        	//if(product_id !=null)
-        	//	productCartService.delete(member_number, Integer.valueOf(product_id));
+        	if(product_id !=null) {
+        		 System.out.println("------------------a1------------------------------------------------ " );	
+        		 productCartService.delete(member_number, Integer.valueOf(product_id));
+        		 System.out.println("------------------a2----------------------------------------------- " );	
+        	}
         	
         	// 로그인 한사람의 장바구니안 리스트를 읽어온다.
             List <ProductCartVO> productCartVO = productCartService.getList(member_number);
     		model.addAttribute("products", productCartVO);
+    		
+    		
+    		
+        	//로그인 한사람의 주문 리스트에서 물건 한개를 삭제한다.
+        	if(orders_id !=null) {
+        		 System.out.println("------------------b1------------------------------------------------ " );	
+        		productOrderService.delete(Integer.valueOf(orders_id));
+        		 System.out.println("------------------b2----------------------------------------------- " );	
+        	}
     		
     		// 로그인 한사람의 주문 리스트를 읽어온다.
     		List <ProductOrderVO> productOrderVO = productOrderService.getOrderList(uservo.getMember_id());
@@ -257,9 +271,9 @@ public class MainController {
         }
  		return "/pay/checkout";
 	}	
-	@GetMapping("/pay/Cart2OrderImport")
-	public String Cart2OrderImport(HttpServletRequest request,  Model model) {
-		System.out.println("----Cart2OrderImport----");
+	@GetMapping("/pay/checkout_import")
+	public String checkout_import(HttpServletRequest request,  Model model) {
+		System.out.println("----import----");
 		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String user_id = auth.getName();
@@ -270,17 +284,20 @@ public class MainController {
         	System.out.println("멤버 아이디1 : " +  member_number);
         	//System.out.println("멤버 아이디2 : " +  userService.getUser(user_id));
         	
-        	//로그인 한사람의 주문 리스트에서 물건 한개를 삭제한다.
-        	//if(product_id !=null)
-        	//	productCartService.delete(member_number, Integer.valueOf(product_id));
+        	/////////////////////
+        	//   CART -> ORDER
+        	/////////////////////
         	
-        	// 로그인 한사람의 장바구니안 리스트를 읽어온다.
+      	  	// 로그인 한사람의 장바구니안 리스트들을 읽어온다.
             List <ProductCartVO> productCartVO = productCartService.getList(member_number);
-            for (ProductCartVO product : productCartVO) {
-				// 장바구니 안의 물건을 주문 리스틀로 복사한다.
-            	System.out.println("============== todo: cart 2 order ============");
+            for (ProductCartVO cart : productCartVO) {
+				// 장바구니 에서  주문 리스로  물건 복사한다.
+            	System.out.println("============== cart 2 order ============");
+            	// write(int product_price, int member_number, int product_id);
+            	productOrderService.write( cart.getProduct_price(),  cart.getMember_number(),  cart.getProduct_id());
+            	
             	// 장바구니 안의 물건은 삭제 한다.
-            	productCartService.delete(member_number, product.getProduct_id());
+            	productCartService.delete(member_number, cart.getProduct_id());
 			}
     		//model.addAttribute("products", productCartVO);
     		
@@ -291,5 +308,35 @@ public class MainController {
 
 		return "/pay/import";
 	}
+	@GetMapping("/main/checkout_import_delete")
+	public String checkout_import_delete(HttpServletRequest request,  Model model) {
+		String order_id = (String) request.getParameter("order_id");
+		System.out.println("----checkout_----order_id:" + order_id);
+		
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String user_id = auth.getName();
+        System.out.println("----------------------유저 아이디 : " + user_id);	
+        if(user_id != "anonymousUser" && order_id !=null) {
+        	UserVO uservo = userService.getUser(user_id);
+        	int member_number = uservo.getMember_number();
+        	System.out.println("멤버 아이디1 : " +  member_number);
+        	//System.out.println("멤버 아이디2 : " +  userService.getUser(user_id));
+        	
+        	//로그인 한사람의 주문 리스트에서 물건 한개를 삭제한다.
+        	if(order_id !=null)
+        		productOrderService.delete(Integer.valueOf(order_id));
+        	
+        	// 로그인 한사람의 장바구니안 리스트를 읽어온다.
+            List <ProductCartVO> productCartVO = productCartService.getList(member_number);
+    		model.addAttribute("products", productCartVO);
+    		
+    		// 로그인 한사람의 주문 리스트를 읽어온다.
+    		List <ProductOrderVO> productOrderVO = productOrderService.getOrderList(uservo.getMember_id());
+    		model.addAttribute("products_order", productOrderVO);    		
+        }
+ 		return "/pay/import";
+	}
+	
 	
 }

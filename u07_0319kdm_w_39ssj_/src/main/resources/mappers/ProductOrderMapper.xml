@@ -9,14 +9,67 @@
 	<select id="getOrderList"
 		resultType="edu.kosmo.kbat.vo.ProductOrderVO">
 	<![CDATA[
-	SELECT o.orders_id, p.product_id, m.member_id, p.product_name, o.orders_date, o.orders_price
-		FROM product p, order_detail d, orders o , member m
-		WHERE p.product_id = d.product_id AND 
-		    o.orders_id = d.orders_id AND 
-		    m.member_id = #{member_id}
-		ORDER BY o.orders_date DESC
+	SELECT 
+		o.orders_id, 
+		p.product_id, 
+		m.member_id, 
+		p.product_name, 
+		o.orders_date, 
+		p.product_price,
+        v.video_name,
+        i.image_name
+	FROM 
+		product p, 
+		order_detail d, 
+		orders o , 
+		member m,
+		video v,
+		image i
+	WHERE 
+		p.product_id = d.product_id AND 
+		o.orders_id = d.orders_id AND 
+		p.product_id = v.product_id AND
+		p.product_id = i.product_id AND
+		m.member_id = #{member_id}
+	ORDER BY o.orders_date DESC
 	]]>
 	</select>
+	
+ 	<insert id="write_orders" >
+   		<![CDATA[
+			insert into orders
+				(
+				orders_id, 
+				orders_price, 
+				member_number
+				)
+			values
+				(
+				orders_seq.nextval, 
+				#{product_price}, 
+				#{member_number}
+				)
+  		]]>
+    </insert> 
 
-
+ 	<insert id="write_order_detail" >
+   		<![CDATA[
+			insert into order_detail
+				(
+				order_detail_id, 
+				order_detail_count, 
+				orders_id, 
+				product_id
+				) 
+			values
+				(
+				order_detail_seq.nextval, 
+				#{product_price}, 
+				orders_seq.currval, 
+				#{product_id}
+				)
+  		]]>
+    </insert> 
+    
+    
 </mapper>

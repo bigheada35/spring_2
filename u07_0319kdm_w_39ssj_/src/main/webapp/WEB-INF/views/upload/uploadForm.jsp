@@ -80,7 +80,7 @@
     </div>
   </div>
 	</header>
-<h1>상품 등록 삭제 페이지 입니다.</h1>
+<h1>상품 (등록 삭제 수정) 페이지 입니다.</h1>
 
 
 		<p>"${message}"</p>
@@ -128,11 +128,25 @@
 					<td/>
 					<%-- <td>${file} </td> --%>
 					<%-- <td>${prod.video_name} </td> --%>
-					<td>${prod.product_name} </td>
+					<td>
+						${prod.product_name}
+						<form:form action="/upload/modify" method="post">
+							<input type="hidden" name="product_id" value="${prod.product_id}">
+							<input type="text"  name="product_name" />
+							<button type="submit" class="btn">이름변경</button>
+						</form:form>
+					</td>
 					<td>${prod.product_price} </td>
 					<td>${prod.product_enable} </td>
 					<td>${prod.product_date} </td>
-					<td style="min-width:200px;">${prod.product_description} </td>
+					<td style="min-width:200px;">
+						${prod.product_description} 
+						<form:form action="/upload/modify" method="post">
+							<input type="hidden" name="product_id" value="${prod.product_id}">
+							<input type="text"  name="product_description"/>
+							<button type="submit" class="btn">내용변경</button>
+						</form:form>
+					</td>
 					<td>
 						<img src="<c:url value="${prod.image_name}"/>" style="max-width:250px;"/>
 					${prod.image_name} </td>

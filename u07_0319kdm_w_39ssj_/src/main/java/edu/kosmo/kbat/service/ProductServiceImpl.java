@@ -53,4 +53,9 @@ public class ProductServiceImpl implements ProductService{
 		productMapper.deleteProduct(product_id);
 	}
 	
+	@Override
+	public void modify(ProductVO product) {
+		productMapper.modify(product);
+	}
+	
 }

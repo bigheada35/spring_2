@@ -109,5 +109,19 @@
   		]]>
     </insert> 
  
+  	<update id="modify" >
+   		<![CDATA[
+			update 
+			    product
+			set 
+			    product_name = #{product_name},
+			    product_price = #{product_price},
+			    product_date = #{product_date},
+			    product_description = #{product_description}
+			where 
+			    product_id = #{product_id}
+  		]]>
+    </update> 
+ 
 	 
 </mapper>

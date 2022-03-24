@@ -23,5 +23,19 @@ public class ProductOrderServiceImpl implements ProductOrderService {
 		return productOrderMapper.getOrderList(member_id);
 	}
 
+	@Override
+	public void write(int product_price, int member_number, int product_id) {
+		
+		productOrderMapper.write_orders(product_price, member_number);
+		productOrderMapper.write_order_detail(product_id);
+		
+	}
+	
+	@Override
+	public void delete(int orders_id) {
+		
+		productOrderMapper.delete_order_detail(orders_id);
+		productOrderMapper.delete_orders(orders_id);
 
+	}
 }

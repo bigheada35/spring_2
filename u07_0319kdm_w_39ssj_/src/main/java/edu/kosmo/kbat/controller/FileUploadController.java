@@ -116,6 +116,8 @@ public class FileUploadController {
 		return "upload/uploadForm";
 	}
 	
+
+	
 	@GetMapping("/files/{filename:.+}")
 	@ResponseBody
 	public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
@@ -179,6 +181,34 @@ public class FileUploadController {
 		
 		return "redirect:/upload/list2";
 	}
+	@PostMapping("/upload/modify")
+	public String modify(@ModelAttribute ProductVO productVO) throws IOException {
+		
+		String product_name = productVO.getProduct_name();
+		String product_description = productVO.getProduct_description();
+		int product_id = productVO.getProduct_id();
+		
+		System.out.println("--------------------/upload/modify");
+		System.out.println("product_name :" + product_name);
+		System.out.println("product_description :" + product_description);
+		System.out.println("product_id : " + product_id);
+
+		//  product_id 에 해당하는 것을 DB에서 꺼내온다. 
+		ProductVO pvo = productService.get(product_id);
+		
+		//  바꿀 데이터가 있는 경우만,  적용한다.
+		if(product_name != null)
+			pvo.setProduct_name(product_name);
+		if(product_description != null)
+			pvo.setProduct_description(product_description);
+		
+		// DB의 내용을 변경한다.
+		System.out.println("------------------------1--------");
+		productService.modify(pvo);
+		System.out.println("------------------------2--------");		
+		return "redirect:/upload/list2";
+	}
+
 	
 	@ExceptionHandler(StorageFileNotFoundException.class)
 	public ResponseEntity<?> handleStorageFileNotFound(StorageFileNotFoundException exc) {

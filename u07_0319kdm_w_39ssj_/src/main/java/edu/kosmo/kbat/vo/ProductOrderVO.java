@@ -14,7 +14,6 @@ import lombok.ToString;
 @Setter
 @Getter
 @ToString
-
 public class ProductOrderVO { // 상품, 상품카테고리, 주문, 주문상세, 회원 조인 = 주문 조회 VO
 	private int product_id; // 상품id
 	private String product_name; // 상품명
@@ -37,4 +36,7 @@ public class ProductOrderVO { // 상품, 상품카테고리, 주문, 주문상�
 	private int order_detail_id; // 주문상세번호
 	private int order_detail_count; // 수량
 
+	private String video_name;
+	private String image_name;
+	
 }

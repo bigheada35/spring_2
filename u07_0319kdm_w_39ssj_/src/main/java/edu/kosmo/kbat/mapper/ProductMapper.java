@@ -38,4 +38,7 @@ public interface ProductMapper {
 	void deleteImage(int product_id);
 	@Delete("delete from product where PRODUCT_ID=#{product_id}")
 	void deleteProduct(int product_id);
+	
+	// modify
+	void modify(ProductVO product);
 }
