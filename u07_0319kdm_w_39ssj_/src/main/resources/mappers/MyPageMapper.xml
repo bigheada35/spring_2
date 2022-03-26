@@ -90,12 +90,28 @@
 	<select id="getOrderMyList"
 		resultType="edu.kosmo.kbat.joinvo.ProductOrderDetailOrderVO">
 	<![CDATA[
-	SELECT o.orders_id, p.product_id, m.member_id, p.product_name, o.orders_date, o.orders_price
-		FROM product p, order_detail d, orders o , member m
-		WHERE p.product_id = d.product_id AND 
+	   SELECT 
+	   		o.orders_id,
+	   		p.product_id,
+	   		m.member_id,
+	   		p.product_name,
+	   		o.orders_date,
+	   		o.orders_price,
+	   		i.image_name
+		FROM
+			product p,
+			order_detail d,
+			orders o,
+			member m,
+			image i
+		WHERE
+			p.product_id = d.product_id AND 
 		    o.orders_id = d.orders_id AND 
-		    m.member_id = #{member_id}
-		ORDER BY o.orders_date DESC
+		    m.member_number = o.member_number AND
+		    m.member_id = #{member_id} AND
+            i.product_id = p.product_id  
+		ORDER BY
+			o.orders_date DESC
 	]]>
 	</select>
 	<select id="getOrderMyListPaging"
@@ -104,12 +120,30 @@
 	
   SELECT * FROM (
               SELECT ROWNUM AS RNUM, A.* FROM (
-		SELECT o.orders_id, p.product_id, m.member_id, p.product_name, o.orders_date, o.orders_price
-		FROM product p, order_detail d, orders o , member m
-		WHERE p.product_id = d.product_id AND 
+              
+		SELECT 
+	   		o.orders_id,
+	   		p.product_id,
+	   		m.member_id,
+	   		p.product_name,
+	   		o.orders_date,
+	   		o.orders_price,
+	   		i.image_name
+		FROM
+			product p,
+			order_detail d,
+			orders o,
+			member m,
+			image i
+		WHERE
+			p.product_id = d.product_id AND 
 		    o.orders_id = d.orders_id AND 
-		    m.member_id = #{member_id}
-		ORDER BY o.orders_date DESC
+		    m.member_number = o.member_number AND
+		    m.member_id = #{member_id} AND
+            i.product_id = p.product_id  
+		ORDER BY
+			o.orders_date DESC
+			
  			) A WHERE ROWNUM <= #{cri.pageNum} * #{cri.amount} 
 		) WHERE RNUM > (#{cri.pageNum}-1) * #{cri.amount}
 	]]>
@@ -125,6 +159,79 @@
 	</select>
 
 
+
+	<!-- 리뷰 마이페이지 리스트 -->
+	<select id="getMyReviewList"
+		resultType="edu.kosmo.kbat.joinvo.ProductOrderDetailBoardVO">
+
+		<![CDATA[
+		SELECT * FROM ( 
+		
+			SELECT	
+				b.board_id,
+				b.board_content,
+				b.boardtype_id,
+				b.board_date,
+				m.member_id,
+				p.product_id,
+				p.product_name
+			FROM
+				board b,
+				member m,
+				product p,
+				review r,
+				order_detail d,
+				orders o
+			WHERE 
+          		b.boardtype_id = 2 AND
+          		r.order_detail_id = d.order_detail_id AND
+          		p.product_id = d.product_id AND
+          		o.member_number = m.member_number AND
+          		m.member_id = #{member_id} 
+            ORDER BY 
+            	b.board_date desc
+            	
+			    ) A WHERE ROWNUM <= #{cri.pageNum} * #{cri.amount} 
+			) WHERE RNUM > (#{cri.pageNum}-1) * #{cri.amount}
+		]]>
+	</select>
+
+	<!-- 작성한 상품 리뷰글 -->
+	<select id="reviewMyList"
+		resultType="edu.kosmo.kbat.joinvo.ProductOrderDetailBoardVO">
+
+<![CDATA[
+		SELECT	
+				b.board_id,
+				b.board_content,
+				b.boardtype_id,
+				b.board_date,
+				m.member_id,
+				p.product_id,
+				p.product_name
+			FROM
+				board b,
+				member m,
+				product p,
+				review r,
+				order_detail d,
+				orders o
+			WHERE 
+          		b.boardtype_id = 2 AND
+          		r.order_detail_id = d.order_detail_id AND
+          		p.product_id = d.product_id AND
+          		o.member_number = m.member_number AND
+          		m.member_id = #{member_id}
+            ORDER BY 
+            	b.board_date desc
+          
+	]]>
+	</select>
+
+
+	<!-- 고객 QnA 상세페이지 판매자가 작성한 댓글 리스트 받아오기 -->
+	<!-- <select id="getMyqReply" resultType="edu.kosmo.kbat.vo.QBoardAndMemberVO."> 
+		<![CDATA[ SELECT * FROM board_comment WHERE board_id = #{board_id} ]]> </select> -->
 
 
 

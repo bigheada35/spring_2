@@ -15,10 +15,9 @@ public interface NBoardAndMemberMapper {
 
 	//List<NBoardVO> getList();	
 	List<NBoardAndMemberVO> getList();//ssj2	
-	NBoardAndMemberVO read(int board_id); //esh ///ㅁㅁㅁㅁ
-	void write(NBoardAndMemberVO board); //ㅁㅁㅁㅁ
-	//void write(NBoardVO board); esh //ㅁㅁㅁㅁ
-	//void modify(NBoardAndMemberVO board); //ㅁㅁㅁㅁ
+	NBoardAndMemberVO read(int board_id); 
+	void write(NBoardAndMemberVO board);
+
 	void hit(int board_id);
 	void delete(int board_id);
 

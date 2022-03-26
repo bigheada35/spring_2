@@ -19,13 +19,7 @@ public class QBoardServiceImpl implements QBoardService{
 		
 	@Autowired
 	private QBoardAndMemberMapper boardAndMemberMapper;//ssj
-/*
-	@Override
-	public List<QBoardAndMemberVO> qgetList() {//ssj2
-		log.info("getList()..");
-		return boardAndMemberMapper.qgetList();
-	}*/
-	
+
 	@Override
 	public QBoardAndMemberVO qread(int board_id) {
 		log.info("read()..");
@@ -39,7 +33,6 @@ public class QBoardServiceImpl implements QBoardService{
 		boardAndMemberMapper.qwrite(board);
 		System.out.println("member=======" + board.getMember_number());
 		log.info("write()1..");
-		//boardAndMemberMapper.qrepwrite(board);
 		log.info("write2()..");
 		
 	}
@@ -77,8 +70,6 @@ public class QBoardServiceImpl implements QBoardService{
 	@Override
 	public List<QBoardAndMemberVO> qgetList(Criteria criteria) {
 		log.info("getList() ..");
-		//return boardMapper.getListWithPaging(criteria);		
-		//return boardAndMemberMapper.qgetListWithPaging(criteria);//ssj3
 		List<QBoardAndMemberVO> lst = boardAndMemberMapper.qgetListWithPaging(criteria);		
 		return lst;		
 	}

@@ -1,18 +1,17 @@
 package edu.kosmo.kbat.controller;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import edu.kosmo.kbat.joinvo.ProductOrderDetailOrderVO;
+import edu.kosmo.kbat.principal.PrincipalDetails;
+import edu.kosmo.kbat.service.MyPageService;
 import edu.kosmo.kbat.service.StatisticsService;
+import edu.kosmo.kbat.vo.MemberVO;
 import lombok.extern.slf4j.Slf4j;
 
 //
@@ -24,52 +23,29 @@ public class StatisticsController {
 	@Autowired
 	private StatisticsService statisticService;
 	
-
+	@Autowired
+	private MyPageService myPageService;
 
 	@GetMapping("/income")
-	public ModelAndView adminDonationStat(ModelAndView mav)throws Exception {
+	public ModelAndView adminDonationStat(@AuthenticationPrincipal PrincipalDetails principalDetails, ModelAndView mav, MemberVO member, ProductOrderDetailOrderVO povo)
+			throws Exception {
+		mav.setViewName("/statistics/income");
 
+		// 인증 회원 정보
+		MemberVO getMember = myPageService.readMember(principalDetails.getUserID());
+		// 회원 정보 받아오기
+		mav.addObject("member", getMember);
+
+
+		mav.addObject("day", statisticService.dailyChart());
+		mav.addObject("week", statisticService.weekChart());
 		
-		SimpleDateFormat yy = new SimpleDateFormat("yyyy");
-		SimpleDateFormat mm = new SimpleDateFormat("MM"); 
-		SimpleDateFormat dd = new SimpleDateFormat("dd");
-
-		Date time = new Date(); 
-
-
-		String year = yy.format(time);
-	
-		String month = mm.format(time);
+		log.info("=========================" + statisticService.monthChart());
+		mav.addObject("month", statisticService.monthChart());
 		
-		String day = dd.format(time);
-
-		log.info("오늘날짜: " + year + "년 " + month + "월 " + day + "일");
-
-		mav.addObject("year", year);
-		mav.addObject("month", month);
-		mav.addObject("day", day);
-
-		mav.addObject("dailySale", statisticService.getDailySales(year, month)); // 일별
-		mav.addObject("monthSale", statisticService.getMonthSales(year)); // 월별
-		mav.addObject("yearSale", statisticService.getYearSales(year)); // 년별
-	
-		log.info("년별통계 금액: " + statisticService.getYearSales(year));
-		mav.setViewName("statistics/income");
+		mav.addObject("year", statisticService.yearChart());
 
 		return mav;
 	}
-	
-	@GetMapping("/temp")
-	@ResponseBody
-	public Map<Integer, Integer> temp(@RequestParam(value = "month") Integer month) {
-		log.info("month : " + month); 
-		return statisticService.getDailySales("2021", String.valueOf(month));
-	}
-	
 
-
-	
-		
-
-	}
-
+}

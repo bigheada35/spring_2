@@ -63,7 +63,7 @@
    	<insert id="write">
    		<![CDATA[
      		insert into board (board_id, member_number, board_title, board_content, boardtype_id) 
-      		values (board_seq.nextval, #{member_number}, #{board_title}, #{board_content}, 0) 
+      		values (board_seq.nextval, #{member_number} , #{board_title}, #{board_content}, 0) 
   		]]>
     </insert>  
    	
@@ -133,3 +133,5 @@
 	</select>
 	 
 </mapper>
+
+

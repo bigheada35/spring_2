@@ -12,14 +12,12 @@ import edu.kosmo.kbat.vo.NBoardAndMemberVO;
 public interface NBoardService {
 	
 	//공지사항 : n, 후기 : r, 문의 : q
-	//ssj2
 	//List<NBoardVO> getList();
 	List<NBoardAndMemberVO> getList();//ssj2
 	
-	NBoardAndMemberVO read(int board_id); //esh ㅁㅁㅁㅁㅁ
-	void write(NBoardAndMemberVO board); //ㅁㅁㅁㅁㅁㅁ
-	//void write(NBoardVO board); esh
-	void modify(NBoardAndMemberVO board); //ㅁㅁㅁㅁㅁㅁ
+	NBoardAndMemberVO read(int board_id); 
+	void write(NBoardAndMemberVO board); 
+	void modify(NBoardAndMemberVO board);
 	void hit(int board_id);
 	void delete(int board_id);
 	

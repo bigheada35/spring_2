@@ -1,17 +1,21 @@
 package edu.kosmo.kbat.service;
 
-import java.util.Map;
+import edu.kosmo.kbat.joinvo.ProductOrderDetailOrderVO;
+import edu.kosmo.kbat.vo.OrderVO;
+
 
 public interface StatisticsService {
 
 	
+		// 일간 통계차트
+	public OrderVO dailyChart();
 
+		// 주간 통계차트
+	public OrderVO weekChart();
 
-	// 일별 매출액 통계		
-	 Map<Integer, Integer> getDailySales(String year, String month);
-	// 월별 매출액 통계		
-	 Map<Integer, Integer> getMonthSales(String year);
-	// 연 매출액 통계		
-	 int getYearSales(String year);
-	
+		// 월간 통계차트
+	public OrderVO monthChart();
+
+		// 연간 통계차트
+	public OrderVO yearChart();
 }

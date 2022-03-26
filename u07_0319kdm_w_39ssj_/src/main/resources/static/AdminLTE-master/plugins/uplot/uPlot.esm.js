@@ -262,11 +262,13 @@ function incrRoundUp(num, incr) {
 function incrRoundDn(num, incr) {
 	return floor(num/incr)*incr;
 }
+
 /*
 function roundDec(val, dec) {
 	return round(val * (dec = 10**dec)) / dec;
 }
 */
+
 const fixedDec = new Map();
 
 function guessDec(num) {
@@ -1359,7 +1361,11 @@ function _sync(key, opts) {
 
 	return s;
 }
+
 /*
+
+
+
 function orient(u, seriesIdx, cb) {
 	const series = u.series[seriesIdx];
 	const scales = u.scales;
@@ -1416,7 +1422,11 @@ function orient(u, seriesIdx, cb) {
 		)
 	);
 }
+
 */
+
+
+
 // creates inverted band clip path (towards from stroke path -> yMax)
 function clipBandLine(self, seriesIdx, idx0, idx1, strokePath) {
 	return orient(self, seriesIdx, (series, dataX, dataY, scaleX, scaleY, valToPosX, valToPosY, xOff, yOff, xDim, yDim) => {
@@ -2961,7 +2971,11 @@ function uPlot(opts, data, then) {
 		for (let k in pendScales)
 			pendScales[k] = null;
 	}
+
 /*
+
+
+
 	// TODO: drawWrap(si, drawPoints) (save, restore, translate, clip)
 	function drawPoints(si) {
 	//	log("drawPoints()", arguments);
@@ -3042,7 +3056,11 @@ function uPlot(opts, data, then) {
 
 		_pxAlign && ctx.translate(-offset, -offset);
 	}
+
 */
+
+
+
 	// grabs the nearest indices with y data outside of x-scale limits
 	function getOuterIdxs(ydata) {
 		let _i0 = clamp(i0 - 1, 0, dataLen - 1);
@@ -3299,7 +3317,11 @@ function uPlot(opts, data, then) {
 
 		return converged;
 	}
+
 /*
+
+
+
 	function drawAxesGrid() {
 		axes.forEach((axis, i) => {
 			if (!axis.show || !axis._show)
@@ -3439,7 +3461,11 @@ function uPlot(opts, data, then) {
 
 		fire("drawAxes");
 	}
+
 */
+
+
+
 	function resetYSeries(minMax) {
 	//	log("resetYSeries()", arguments);
 
@@ -3776,7 +3802,11 @@ function uPlot(opts, data, then) {
 		let v = posToVal(pos, xScaleKey);
 		return closestIdx(v, data[0], i0, i1);
 	}
+
 /*
+
+
+
 	self.valToIdx = val => closestIdx(val, data[0]);
 	self.posToIdx = closestIdxFromXpos;
 	self.posToVal = posToVal;
@@ -3791,7 +3821,11 @@ function uPlot(opts, data, then) {
 			can ? plotTop : 0,
 		)
 	);
+
 */
+
+
+
 	// defers calling expensive functions
 	function batch(fn) {
 		fn(self);

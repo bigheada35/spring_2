@@ -37,7 +37,13 @@
 
    	<select id="rgetList" resultMap = "rBoardMap">  				
    		<![CDATA[ 
-   			select * from boardtype,board,member where board.boardtype_id = boardtype.boardtype_id and board.boardtype_id = 2 and member.member_number =board.member_number order by board_id
+   			select * from boardtype,board,member, rating, review
+			where board.boardtype_id = boardtype.boardtype_id 
+			and board.boardtype_id = 2 
+			and member.member_number =board.member_number 
+			and review.board_id = board.board_id
+			and review.review_id = rating.review_id
+			order by board.board_id
    		]]>  		
    	</select> 
    	
@@ -49,9 +55,11 @@
    	
    	 <select id="rread" resultMap = "rBoardMap">
    		<![CDATA[
-      		select * from board,member,attachment
+      		select * from board,member,attachment,rating, review
 			where member.member_number =board.member_number 
 			and attachment.board_id = board.board_id
+            and review.board_id = board.board_id
+            and rating.review_id = review.review_id
 			and board.board_id = #{board_id}      		
    		]]>
    	</select>
@@ -144,7 +152,8 @@
 													board.board_content,
 													board.board_date,
 													board.board_hit,
-													rating.rating_check											
+													rating.rating_check,
+													review.review_id									
 												from boardtype, board, member, rating, review
 												where 
 													board.boardtype_id = boardtype.boardtype_id 

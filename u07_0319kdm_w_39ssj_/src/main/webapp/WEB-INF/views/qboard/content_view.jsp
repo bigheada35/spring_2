@@ -1,8 +1,11 @@
-<%@ page language="java" contentType="text/html;charset=utf-8"
-	pageEncoding="utf-8"%>
+<%@ page language="java" contentType="text/html;charset=utf-8" pageEncoding="utf-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+<sec:authorize access="isAuthenticated()">
+<sec:authentication property="principal" var="principal" />
+</sec:authorize>
 <!DOCTYPE html>
 <html>
 <head>
@@ -37,14 +40,28 @@
 				<td>내용</td>
 				<td><textarea rows="10" name="board_content">${qcontent_view.board_content}</textarea></td>
 			</tr>
-			<tr>				
-				<td colspan="2"><a href="qlist">목록</a> &nbsp;&nbsp; 
+			<tr>	
+				<c:choose>      	
+	                <c:when test="${qcontent_view.member_id eq principal.user.member_id}">	
+	                	<td colspan="2"> <a href="qlist">목록</a> &nbsp;&nbsp;            
+			            <a href="qmodify_view?board_id=${qcontent_view.board_id}">수정</a> &nbsp;&nbsp;
+			            <a href="qdelete?board_id=${qcontent_view.board_id}">삭제</a> &nbsp;&nbsp; 
+	                </c:when>
+	                <c:when test="${principal.user.member_id == 'kbatc5'}">	
+	                	<td colspan="2"> <a href="qlist">목록</a> &nbsp;&nbsp;            
+			            <a href="qreply_view?board_id=${qcontent_view.board_id}&reply_group=${qcontent_view.reply_group}
+				&reply_step=${qcontent_view.reply_step}&reply_indent=${qcontent_view.reply_indent}">답변</a>
+	                </c:when>
+	                <c:otherwise><td colspan="2"> <a href="qlist">목록</a> &nbsp;&nbsp; </c:otherwise>
+	            </c:choose>			
+				<%-- <td colspan="2"><a href="qlist">목록</a> &nbsp;&nbsp; 
 				<a href="qmodify_view?board_id=${qcontent_view.board_id}">수정</a>
 				<a href="qreply_view?board_id=${qcontent_view.board_id}&reply_group=${qcontent_view.reply_group}
 				&reply_step=${qcontent_view.reply_step}&reply_indent=${qcontent_view.reply_indent}">답변</a>
-				<a href="qdelete?board_id=${qcontent_view.board_id}">삭제</a>
+				<a href="qdelete?board_id=${qcontent_view.board_id}">삭제</a> --%>
 			</tr>
 		</form:form>
 	</table>	
 </body>
+
 </html>

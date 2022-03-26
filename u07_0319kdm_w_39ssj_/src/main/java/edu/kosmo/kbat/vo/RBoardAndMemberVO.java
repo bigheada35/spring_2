@@ -32,6 +32,7 @@ public class RBoardAndMemberVO {
 	
 	private int attachment_id;
 	private String attachment_name;
+	
 		
 	private List<BoardtypeVO> boardtypeList;
 	

@@ -36,5 +36,8 @@ public class ProductOrderDetailOrderVO { // 상품, 상품카테고리, 주문, 
 
 	private int order_detail_id; // 주문상세번호
 	private int order_detail_count; // 수량
+	
+	private int image_id;
+	private String image_name;
 
 }

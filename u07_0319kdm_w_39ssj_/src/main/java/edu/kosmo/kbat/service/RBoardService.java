@@ -13,6 +13,7 @@ public interface RBoardService {
 	
 	List<RBoardAndMemberVO> rgetList();
 	RBoardAndMemberVO rread(int board_id); 
+	//RBoardAndMemberVO rread(int board_id, int review_id); 
 	void rwrite(RBoardAndMemberVO board);
 	void rmodify(RBoardAndMemberVO board);
 	void rhit(int board_id);
@@ -22,10 +23,6 @@ public interface RBoardService {
 	int rgetTotalCount();
 	public List<RBoardAndMemberVO> rgetList(Criteria criteria);
 	
-	//void rwrite_review(RBoardAndMemberVO board);
-	//void rwrite_rating(RBoardAndMemberVO board);
-	//void rwrite_img(RBoardAndMemberVO board);
-	
 	List<BoardtypeVO> qgetboardtypeList();
-	
+
 }

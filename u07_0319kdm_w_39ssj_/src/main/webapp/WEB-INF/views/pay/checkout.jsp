@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!doctype html>
 <html lang="en">
@@ -66,80 +67,61 @@
 	</header>
 
 <main role="main">
+	<div class="row">
+		<div class="col-sm-1"></div>
+		<div class="col-sm-10 badge-light">
+			<h1>장바구니</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-2"></div>
+		<div class="col-sm-10 text-center">
+			<table width="1000" cellpadding="0" cellspacing="0" border="1">
+				<c:forEach items="${products}" var="prod">
+				<tr>
+							<td><img src="<c:url value="${prod.image_name}"/>" style="max-width:150px;"/></td>
+							<td>${prod.product_name} </td>
+							<td><fmt:formatNumber value="${prod.product_price}" pattern="#,###" />원 </td>
+							<td><a href="/main/checkout_delete?product_id=${prod.product_id}">카트상품삭제</a></td>
+				 </tr>
+				</c:forEach>	
+			</table>
+		</div>
+	</div>
 
-	<h1>결제 페이지 입니다.</h1>
-  
-	<h1>카트 안의 내용.</h1>
-	<table width="1000" cellpadding="0" cellspacing="0" border="1">
-		<%-- <c:forEach items="${files}" var="file"> --%>
-		<c:forEach items="${products}" var="prod">
-		<tr>
-	 	 			 <td>${prod.member_id}</td>
-	 	 			 <td>${prod.member_name}</td>
-	 	 			 <td>${prod.member_phone}</td>
-	 	 			 <td>${prod.member_email}</td>
-	 	 			 <td>${prod.member_address}</td>
-	 				<td>
-	 					<video width="300" height="250" controls/>
-			          		<%-- <source src="<c:url value="${file}"/>" type="video/mp4"> --%>
-			          		<source src="<c:url value="${prod.video_name}"/>" type="video/mp4">
-					    </video>
-					    ${prod.video_name}
-					<td/>
-					<%-- <td>${file} </td> --%>
-					<%-- <td>${prod.video_name} </td> --%>
-					<td>${prod.product_name} </td>
-					<td>${prod.product_price} </td>
-					<td>${prod.product_enable} </td>
-					<td>${prod.product_date} </td>
-					<td style="min-width:200px;">${prod.product_description} </td>
-					<td>
-						<img src="<c:url value="${prod.image_name}"/>" style="max-width:250px;"/>
-					${prod.image_name} </td>
-					<td>
-						<a href="/main/checkout_delete?product_id=${prod.product_id}">카트상품삭제</a> 
-					</td>
 	
-		 </tr>
-		</c:forEach>	
-	</table>
-
-
-	<h1>주문 안의 내용.</h1>
-	<table width="1000" cellpadding="0" cellspacing="0" border="1">
-		<%-- <c:forEach items="${files}" var="file"> --%>
-		<c:forEach items="${products_order}" var="prod">
-		<tr>
-	 	 			 <td>${prod.member_id}</td>
-	 	 			 <%-- <td>${prod.member_name}</td> --%> 
-	 	 			 <%-- <td>${prod.member_phone}</td> --%>
-	 	 			 <%-- <td>${prod.member_email}</td> --%>
-	 	 			 <%-- <td>${prod.member_address}</td> --%>
-	 				<td>
-	 					<video width="300" height="250" controls/>
-			          		<%-- <source src="<c:url value="${file}"/>" type="video/mp4"> --%>
-			          		<source src="<c:url value="${prod.video_name}"/>" type="video/mp4">
-					    </video>
-					    <%-- ${prod.video_name} --%>
-					<td/>
-					<%-- <td>${file} </td> --%>
-					<td>${prod.video_name} </td> 
-					<td>${prod.product_name} </td>
-					<td>${prod.product_price} </td>
-					<%-- <td>${prod.product_enable} </td> --%>
-					<td>${prod.product_date} </td>
-					<td style="min-width:200px;">${prod.product_description} </td>
+	<div class="row">
+		<div class="col-sm-1"></div>
+		<div class="col-sm-10 badge-light ">
+			<h1>주문 내용</h1>
+		</div>
+	</div>	
+	
+	<div class="row">
+		<div class="col-sm-2"></div>
+		<div class="col-sm-10 text-center">
+			<table width="1000" cellpadding="0" cellspacing="0" border="1">
+				<c:forEach items="${products_order}" var="prod">
+				<tr>
 					<td>
-						<img src="<c:url value="${prod.image_name}"/>" style="max-width:250px;"/>
-					${prod.image_name} </td> 
+						<img src="<c:url value="${prod.image_name}"/>" style="max-width:150px;"/>
+					</td> 
+					<td>${prod.product_name} </td>
+					<td><fmt:formatNumber value="${prod.product_price}" pattern="#,###" />원 </td>
 					<td>
 						<a href="/main/checkout_delete?orders_id=${prod.orders_id}">주문삭제</a> 
 					</td>
-	
-		 </tr>
-		</c:forEach>	
-	</table>
-
+				 </tr>
+				</c:forEach>	
+			</table>
+		</div>
+	</div>	
+	<div class="row">
+		<div class="col-sm-1"></div>
+		<div class="col-sm-10 badge-light">
+			<h1>결제 하기</h1>
+		</div>
+	</div>
 	<div class="container">
 	  <div class="row">
 	    <div class="col text-center">

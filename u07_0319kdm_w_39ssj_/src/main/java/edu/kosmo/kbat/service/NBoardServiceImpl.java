@@ -16,18 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class NBoardServiceImpl implements NBoardService{
 	
-	//@Autowired
-	//private NBoardMapper boardMapper;
-	
 	@Autowired
 	private NBoardAndMemberMapper boardAndMemberMapper;//ssj
 
-//ssj2
-//	@Override
-//	public List<NBoardVO> getList() {
-//		log.info("getList()..");
-//		return boardMapper.getList();
-//	}
 	@Override
 	public List<NBoardAndMemberVO> getList() {//ssj2
 		log.info("getList()..");
@@ -76,13 +67,11 @@ public class NBoardServiceImpl implements NBoardService{
 	@Override
 	public List<NBoardAndMemberVO> getList(Criteria criteria) {
 		log.info("getList() ..");
-		//return boardMapper.getListWithPaging(criteria);
 		return boardAndMemberMapper.getListWithPaging(criteria);//ssj3
 	}
 
 	@Override
 	public List<BoardtypeVO> getboardtypeList() {		
-		//return boardMapper.getboardtypeList();
 		return boardAndMemberMapper.getboardtypeList();//ssj
 	}
 

@@ -28,12 +28,14 @@ import edu.kosmo.kbat.page.PageVO;
 import edu.kosmo.kbat.service.NBoardService;
 import edu.kosmo.kbat.service.QBoardService;
 import edu.kosmo.kbat.service.RBoardService;
+import edu.kosmo.kbat.service.ReviewService;
 import edu.kosmo.kbat.service.StorageService;
 import edu.kosmo.kbat.service.UserService;
 import edu.kosmo.kbat.vo.NBoardAndMemberVO;
 import edu.kosmo.kbat.vo.ProductVO;
 import edu.kosmo.kbat.vo.QBoardAndMemberVO;
 import edu.kosmo.kbat.vo.RBoardAndMemberVO;
+import edu.kosmo.kbat.vo.ReviewVO;
 import edu.kosmo.kbat.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
 
@@ -56,6 +58,9 @@ public class BoardController {
 	
 	@Autowired
 	private StorageService storageService;
+	
+	@Autowired
+	private ReviewService reviewService;
 		
 	@GetMapping("/nlist")//ssj3
 	public String list(Criteria cri, Model model) {
@@ -124,7 +129,7 @@ public class BoardController {
 		return "redirect:nlist";		
 	}
 	
-	@GetMapping("/qlist")//ssj3
+	@GetMapping("main/qlist")//ssj3
 	public String qlist(Criteria cri, Model model, QBoardAndMemberVO boardVO) {
 		log.info("qlist()..");				
 		model.addAttribute("qlist", qboardService.qgetList(cri));
@@ -133,17 +138,15 @@ public class BoardController {
 		log.info("total : " + total);
 		model.addAttribute("pageMaker", new PageVO(cri, total));	
 		
-		System.out.println("테스트" +  qboardService.qgetList(cri));
+		System.out.println("테스트 qboardService.qgetList(cri) : " +  qboardService.qgetList(cri));
 		return "qboard/list";
 	}
 	
-	@GetMapping("/qcontent_view")
+	@GetMapping("main/qcontent_view")
 	public String qcontent_view(QBoardAndMemberVO boardVO, Model model) {
 		log.info("qcontent_view()..");
 		int board_id = boardVO.getBoard_id();
 		model.addAttribute("qcontent_view", qboardService.qread(board_id));
-		
-		//model.addAttribute("qreply_view");
 		
 		return "qboard/content_view";
 	}
@@ -172,15 +175,13 @@ public class BoardController {
         System.out.println("==================board_enable1 : " +  boardVO.getBoard_enable());
         
         boardVO.setMember_number(uservo.getMember_number());
-        System.out.println("양세윤 바보ㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗ" + uservo.getMember_number());
+        System.out.println(uservo.getMember_number());
         
         String board_enable = boardVO.getBoard_enable();
         
         model.addAttribute(board_enable);
         
-        System.out.println("==================board_enable2333333333333 : " +  boardVO.getBoard_enable());
-        
-
+        System.out.println(boardVO.getBoard_enable());        
         System.out.println("멤버 아이디1 : " +  uservo.getMember_number());
         System.out.println("멤버 아이디2 : " +  userService.getUser(user_id));
         
@@ -189,9 +190,6 @@ public class BoardController {
 		log.info("qwrite1()...");	
 		qboardService.qrepwrite(boardVO);
 		log.info("qrepwrite()...");	
-		log.info("reply group==== " + boardVO.getReply_group());
-		log.info("reply id==== " + boardVO.getReply_id());
-		log.info("reply board_id==== " + boardVO.getBoard_id());
 		
 		return "redirect:qlist";		
 	}
@@ -245,7 +243,6 @@ public class BoardController {
         System.out.println("멤버 아이디2 : " +  userService.getUser(user_id));
 		log.info("reply()...");
 		System.out.println("---333--------group : " + boardVO.getReply_group());
-		//boardVO.setReply_group(boardVO.getReply_group()); 
 		qboardService.qregisterReply(boardVO);	
 	   
 		System.out.println("---444--------group : " + boardVO.getReply_group());
@@ -254,37 +251,39 @@ public class BoardController {
 		return "redirect:qlist";		
 	}
 	
-	@GetMapping("/rlist")//ssj3
-	public String rlist(Criteria cri, Model model, RBoardAndMemberVO boardVO) {
+	@GetMapping("main/rlist")//ssj3
+	public String rlist(Criteria cri, Model model, RBoardAndMemberVO boardVO, ReviewVO rboardVO) {
 		log.info("list()..");		
 		model.addAttribute("rlist", rboardService.rgetList(cri));
 		int total = rboardService.rgetTotalCount();
 		log.info("total" + total);
 		
-		model.addAttribute("pageMaker", new PageVO(cri, total));	
+		model.addAttribute("pageMaker", new PageVO(cri, total));
 		
+		System.out.println("---------------rboardVO.getReview_id() : " + rboardVO.getReview_id());
 		
 		return "rboard/list";
 	}
 	
-	@GetMapping("/rcontent_view")
-	public String rcontent_view(RBoardAndMemberVO boardVO, Model model) {
+	@GetMapping("main/rcontent_view")
+	public String rcontent_view(RBoardAndMemberVO boardVO, ReviewVO rboardVO, Model model) {
 		log.info("content_view()..");
 		int board_id = boardVO.getBoard_id();
+		int review_id = rboardVO.getReview_id();
 		model.addAttribute("rcontent_view", rboardService.rread(board_id));
-		//model.addAttribute("rcontent_view", boardVO);
+
 		return "rboard/content_view";
 	}
 	
-	@GetMapping("/rwrite_view")
+	@GetMapping("main/rwrite_view")
 	public String rwrite_view(Model model) {		
 		log.info("write_view()...");
 		return "rboard/write_view";
 		
 	}
 	
-	@PostMapping("/rwrite")
-	public String rwrite(RBoardAndMemberVO boardVO, Model model, @RequestPart(required = false) MultipartFile file,
+	@PostMapping("main/rwrite")
+	public String rwrite(RBoardAndMemberVO boardVO, ReviewVO rboardVO, Model model, @RequestPart(required = false) MultipartFile file,
 			RedirectAttributes redirectAttributes) {		
 		log.info("write()...");	
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -301,19 +300,15 @@ public class BoardController {
         String rating_check = boardVO.getRating_check();
         
         model.addAttribute(rating_check);
+        
+        int review_id = rboardVO.getReview_id();
+        model.addAttribute(review_id);
 
         System.out.println("멤버 아이디1 : " +  uservo.getMember_number());
         System.out.println("멤버 아이디2 : " +  userService.getUser(user_id));
+        System.out.println("멤버 아이디3 : " +  boardVO.getReview_id());
+	
 
-        //rboardService.rwrite(boardVO);
-		//rboardService.rwrite_review(boardVO);
-		//rboardService.rwrite_rating(boardVO);	
-        
-        //boardVO.setAttachment_name(user_id);
-        
-        
-        //rboardService.rwrite(boardVO);
-		
 		System.out.println("별점 =================== : " + boardVO.getRating_check());
 
 		storageService.store(file);		
@@ -346,7 +341,7 @@ public class BoardController {
 	}	
 
 	@GetMapping("/rmodify_view")
-	public String rmodify_view(QBoardAndMemberVO boardVO, Model model) {//ssj
+	public String rmodify_view(RBoardAndMemberVO boardVO, Model model) {//ssj
 		log.info("modify_view()...");
 		int board_id = boardVO.getBoard_id();	
 		model.addAttribute("rmodify_view", rboardService.rread(board_id));
@@ -354,9 +349,11 @@ public class BoardController {
 	}	
 	
 	@GetMapping("/rdelete")
-	public String rdelete(RBoardAndMemberVO boardVO, Model model) {		
+	public String rdelete(RBoardAndMemberVO boardVO, ReviewVO rboardVO, Model model) {		
 		log.info("delete()...");	
-		rboardService.rdelete(boardVO.getBoard_id());				
+		int review_id = rboardVO.getReview_id();
+		reviewService.rdelete(review_id);
+		rboardService.rdelete(boardVO.getBoard_id());			
 		return "redirect:rlist";		
 	}
 

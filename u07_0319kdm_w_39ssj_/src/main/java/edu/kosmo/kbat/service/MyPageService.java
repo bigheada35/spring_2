@@ -2,6 +2,7 @@ package edu.kosmo.kbat.service;
 
 import java.util.List;
 
+import edu.kosmo.kbat.joinvo.ProductOrderDetailBoardVO;
 import edu.kosmo.kbat.joinvo.ProductOrderDetailOrderVO;
 import edu.kosmo.kbat.page.Criteria;
 import edu.kosmo.kbat.vo.MemberVO;
@@ -26,5 +27,11 @@ public interface MyPageService {
 
 	// 페이징 단위에 적용되는 최대 주문내역 단위
 	public int getOrderMyTotal(Criteria cri);
+	
+	// 내가 작성한 상품 리뷰
+	public List<ProductOrderDetailBoardVO> getReviewMyList(String member_id);
+
+	public List<ProductOrderDetailBoardVO> getMyReviewList(Criteria cri, String member_id);
+
 
 }

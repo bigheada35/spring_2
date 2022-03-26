@@ -21,6 +21,8 @@
 <p>이메일: <sec:authentication property="principal.user.member_email"/></p>
 <p>주소: <sec:authentication property="principal.user.member_address"/></p>
 <p>회사: <sec:authentication property="principal.user.member_company"/></p>
+<p>권한: <sec:authentication property="principal.user.authority_name"/></p>
+<p>멤버번호: <sec:authentication property="principal.user.member_number"/></p>
 <p><a href="<c:url value="/" />">홈</a></p>
 
 </body>

@@ -11,22 +11,22 @@
 </head>
 <body>
 <table width="800" cellpadding="0" cellspacing="0" border="1">	
-     <form:form action="rwrite" method="post" enctype="multipart/form-data">               
-       		
-		<tr>
-			<td class="form-inline"> 
+     <form:form action="rwrite" method="post" enctype="multipart/form-data">                  		
+		<tr>			
+			<!-- <td class="form-inline">  -->
 			    <input type="radio" name="rating_check" id="rating_check" value="★☆☆☆☆" class="radio" /><span class="ml_10">★☆☆☆☆</span>
 			    <input type="radio" name="rating_check" id="rating_check" value="★★☆☆☆" class="radio" /><span class="ml_10">★★☆☆☆</span>
 			    <input type="radio" name="rating_check" id="rating_check" value="★★★☆☆" class="radio" /><span class="ml_10">★★★☆☆</span>
 			    <input type="radio" name="rating_check" id="rating_check" value="★★★★☆" class="radio" /><span class="ml_10">★★★★☆</span>
 			    <input type="radio" name="rating_check" id="rating_check" value="★★★★★" class="radio" /><span class="ml_10">★★★★★</span>
-			</td> 
+			<!-- </td>  -->
 		</tr> 
-			
-			<label for="img">파일 업로드</label> 
-						<img src="<c:url value="${rwrite_view.attachment_name}"/>" />
-						<input type="file" name="file" >
-		
+		<br>
+		<tr>				
+				<label for="img"></label> 
+				<img src="<c:url value="${rwrite_view.attachment_name}"/>" />
+				<input type="file" name="file" >			
+		 </tr>
          <tr>
             <td> 제목 </td>
             <td> <input type="text" name="board_title" size = "50"> </td>

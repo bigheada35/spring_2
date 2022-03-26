@@ -2,6 +2,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+<sec:authorize access="isAuthenticated()">
+<sec:authentication property="principal" var="principal" />
+</sec:authorize>
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,7 +15,7 @@
 <style>
 	.oriImg{
 		width:200px;
-		height : auto
+		height:auto
 	}
 </style>
 <body>
@@ -22,6 +26,7 @@
 		<input type="hidden" name="board_hit" value="${rcontent_view.board_hit}">
         <input type="hidden" name="board_title" value="${rcontent_view.board_title}">
         <input type="hidden" name="attachment_name" value="${rcontent_view.attachment_name}">
+        <input type="hidden" name="review_id" value="${rcontent_view.review_id}">
         
          <tr>
             <td> 번호 </td>
@@ -48,10 +53,15 @@
             <td> <textarea rows="10" name="board_content" >${rcontent_view.board_content}</textarea></td>
          </tr>
          <tr>
-            <td colspan="2"> <a href="rlist">목록</a> &nbsp;&nbsp;             
-            <a href="rmodify_view?board_id=${rcontent_view.board_id}">수정</a> &nbsp;&nbsp;
-            <a href="rdelete?board_id=${rcontent_view.board_id}">삭제</a> &nbsp;&nbsp; 
-         </tr>
+         	<c:choose>      	
+	                <c:when test="${rcontent_view.member_id eq principal.user.member_id}">	
+	                	<td colspan="2"> <a href="rlist">목록</a> &nbsp;&nbsp;            
+			            <a href="rmodify_view?board_id=${rcontent_view.board_id}">수정</a> &nbsp;&nbsp;
+			            <a href="rdelete?board_id=${rcontent_view.board_id}&review_id=${rcontent_view.review_id}">삭제</a> &nbsp;&nbsp; 
+	                </c:when>
+	                <c:otherwise><td colspan="2"> <a href="rlist">목록</a> &nbsp;&nbsp; </c:otherwise>
+	            </c:choose>	
+            </tr>
         </form:form>
 
    </table>

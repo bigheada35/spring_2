@@ -27,5 +27,7 @@ public class OrderVO {
 	public OrderDetailVO orderDetailVO; // 주문상세
 	public List<OrderDetailVO> listOrderDetailVO;
 	private RBoardAndMemberVO rboardVO; // 리뷰게시판
-
+	
+	
+	private int sales_sum; // 상품 판매액 합계
 }

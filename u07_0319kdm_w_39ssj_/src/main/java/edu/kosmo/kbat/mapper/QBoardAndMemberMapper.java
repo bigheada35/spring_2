@@ -22,8 +22,7 @@ public interface QBoardAndMemberMapper {
 	void qdelete(int board_id);
 	
 	//답글
-	//void qupdateShape(QBoardAndMemberVO board);
-	
+	//void qupdateShape(QBoardAndMemberVO board);	
 	//void qinsertReply(QBoardAndMemberVO board);
 	void qregisterBoard(QBoardAndMemberVO board);
 	void qregisterReply(QBoardAndMemberVO board);

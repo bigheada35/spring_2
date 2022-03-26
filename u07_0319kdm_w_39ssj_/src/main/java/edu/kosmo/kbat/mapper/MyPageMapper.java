@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import edu.kosmo.kbat.joinvo.ProductOrderDetailBoardVO;
 import edu.kosmo.kbat.joinvo.ProductOrderDetailOrderVO;
 import edu.kosmo.kbat.page.Criteria;
 import edu.kosmo.kbat.vo.MemberVO;
@@ -29,5 +30,13 @@ public interface MyPageMapper {
 
 	// 페이징 단위에 적용되는 최대 주문내역 단위
 	public int getOrderMyTotalCount(Criteria cri);
+
+	// QnA 내 글에 관리자가 작성한 댓글 리스트
+	// public List<QBoardAndMemberVO> getMyqReply(int board_id);
+
+	// 리뷰 마이페이지 리스트
+	public List<ProductOrderDetailBoardVO> reviewMyList(String member_id);
+
+	public List<ProductOrderDetailBoardVO> getMyReviewList(Criteria cri, String member_id);
 
 }

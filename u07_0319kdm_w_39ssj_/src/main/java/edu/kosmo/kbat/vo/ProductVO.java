@@ -35,4 +35,10 @@ public class ProductVO {
 
 	private int member_number; // 멤버 테이블
 	private String member_id;
+	
+	private String rating_check; //esh 추가
+	private int reply_group; //esh 추가
+	private int board_enable; //esh 추가
+	
+	
 }
